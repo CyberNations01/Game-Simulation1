@@ -75,7 +75,7 @@ public class Simulation {
         private void printStacks() {
             String s = myStacks.stream()
                     .sorted(Comparator.comparingInt(st -> st.id))
-                    .map(st -> st.id + ":" + st.state.name().charAt(0))
+                    .map(st -> st.id + ":" + st.state.name())
                     .collect(Collectors.joining("  "));
             System.out.println("Stacks => " + s);
         }
