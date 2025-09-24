@@ -34,7 +34,22 @@ public class Simulation {
                 State init = initialStates.getOrDefault(id, State.WILDS); // 默认给 WILDS，按需改
                 myStacks.add(new MyStack(id, ring, init));
             }
+            System.out.println("Init states => " +
+                    myStacks.stream().map(s -> s.id + ":" + s.state.name())
+                            .collect(Collectors.joining("  ")));
         }
+
+//    private void debugBag(String when) {
+//        System.out.printf(
+//                "Bag@%s  Wi=%d/%d  Wa=%d/%d  A=%d/%d  B=%d/%d  total=%d%n",
+//                when,
+//                bag.getCount(FeedbackToken.WILDS),  bag.getLimit(FeedbackToken.WILDS),
+//                bag.getCount(FeedbackToken.WASTES), bag.getLimit(FeedbackToken.WASTES),
+//                bag.getCount(FeedbackToken.DEVA),   bag.getLimit(FeedbackToken.DEVA),
+//                bag.getCount(FeedbackToken.DEVB),   bag.getLimit(FeedbackToken.DEVB),
+//                bag.totalCount()
+//        );
+//    }
 
         /**
          * 每回合：1) 生成 11 token 入池；2) 抽 11 个按顺序结算；3) 按规则回收/保留
@@ -45,6 +60,7 @@ public class Simulation {
                 for (MyStack s : myStacks) {
                     bag.add(toTokenFromState(s.state));
                 }
+//                debugBag("afterAdd");
 
                 // 2) 抽 11 个并按 ORDER 结算
                 List<FeedbackToken> drawn = new ArrayList<>();
@@ -56,6 +72,8 @@ public class Simulation {
                     MyStack target = myStacks.get(pos - 1); // id 从 1 开始，list 从 0 开始
                     tok.resolveOn(target);
                 }
+//                debugBag("afterDraw");
+
 
                 // 3) 回收：2-7 回 Pool；1、8–11 留在板上（不回池）
                 for (int i = 0; i < ORDER.size(); i++) {
@@ -65,11 +83,13 @@ public class Simulation {
                         bag.putBack(tok);
                     }
                 }
+//                debugBag("afterPutBack");
 
                 // 输出当回合摘要
                 System.out.println("Turn " + t + " done.");
                 printStacks();
             }
+
         }
 
         private void printStacks() {

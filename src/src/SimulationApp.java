@@ -32,15 +32,19 @@ public class SimulationApp {
                 switch (input) {
                     case 1: {
                         init.put(i,State.WILDS);
+                        break;
                     }
                     case 2: {
                         init.put(i,State.WASTES);
+                        break;
                     }
                     case 3: {
                         init.put(i,State.DEVA);
+                        break;
                     }
                     case 4: {
                         init.put(i,State.DEVB);
+                        break;
                     }
                 }
             }
@@ -72,5 +76,7 @@ public class SimulationApp {
 
         Simulation sim = new Simulation(turns, seed, init, limitOverride);
         sim.run();
+
     }
+
 }

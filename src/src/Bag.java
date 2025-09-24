@@ -57,5 +57,8 @@ public class Bag {
     Map<FeedbackToken, Integer> snapshot() {
         return new EnumMap<>(counts);
     }
+//    int getLimit(FeedbackToken t) { return limitPerType.get(t); }
+//    int getCount(FeedbackToken t) { return counts.get(t); }
+//    int totalCount() { return counts.values().stream().mapToInt(Integer::intValue).sum(); }
 }
 
