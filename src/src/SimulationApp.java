@@ -5,46 +5,70 @@ import java.util.stream.Collectors;
 public class SimulationApp {
     // ---------- CLI 入口 ----------
     public static void main(String[] args) {
-        System.out.println("Please type your turn number in (1 - 100).");
         int turns  = -1;
-        boolean invalid = true;
-        while(invalid) {
-            Scanner turn = new Scanner(System.in);
-            turns = Integer.parseInt(turn.next());
-            if(turns>=1&&turns<=100){
-                invalid = false;
-            }else{
-                System.out.println("Invalid input! Please input again!");
-            }
-        }
         long seed = 1234L;
 
         // 初始 11 个栈的状态（可通过命令行覆盖；这里先都给 WILDS 作为示例）
         Map<Integer, State> init = new HashMap<>();
-        for (int i = 1; i <= 11; i++) {
-            System.out.println("Stack "+i+": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
-            Scanner in = new Scanner(System.in);
-            int input = Integer.parseInt(in.next());
-            if(input != 1 && input != 2 && input != 3 && input !=4){
-                System.out.println("Invalid input! Please enter in 1-4!");
-                i--;
-            }else {
-                switch (input) {
-                    case 1: {
-                        init.put(i,State.WILDS);
-                        break;
-                    }
-                    case 2: {
-                        init.put(i,State.WASTES);
-                        break;
-                    }
-                    case 3: {
-                        init.put(i,State.DEVA);
-                        break;
-                    }
-                    case 4: {
-                        init.put(i,State.DEVB);
-                        break;
+        System.out.println("Would you like to manually set initial states? (y/n)");
+        Scanner in = new Scanner(System.in);
+        String choice = in.nextLine().trim().toLowerCase();
+
+        if (choice.equals("n")) {
+            // 自动随机初始化
+            Random rng = new Random();
+            turns = rng.nextInt(1,100);
+            System.out.println("The turns number randomly set to "+turns+".");
+            for (int i = 1; i <= 11; i++) {
+                int rand = 1 + rng.nextInt(4); // 1~4
+                State st = switch (rand) {
+                    case 1 -> State.WILDS;
+                    case 2 -> State.WASTES;
+                    case 3 -> State.DEVA;
+                    case 4 -> State.DEVB;
+                    default -> State.WILDS; // fallback, theoretically unreachable
+                };
+                init.put(i, st);
+                System.out.println("Stack " + i + " randomly set to " + st);
+            }
+        } else {
+            System.out.println("Please type your turn number in (1 - 100).");
+            //System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
+            boolean invalid = true;
+            while (invalid) {
+                Scanner turn = new Scanner(System.in);
+                turns = Integer.parseInt(turn.next());
+                if (turns >= 1 && turns <= 100) {
+                    invalid = false;
+                } else {
+                    System.out.println("Invalid input! Please input again!");
+                }
+            }
+            for (int i = 1; i <= 11; i++) {
+                System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
+                Scanner ins = new Scanner(System.in);
+                int input = Integer.parseInt(ins.next());
+                if (input != 1 && input != 2 && input != 3 && input != 4) {
+                    System.out.println("Invalid input! Please enter in 1-4!");
+                    i--;
+                } else {
+                    switch (input) {
+                        case 1: {
+                            init.put(i, State.WILDS);
+                            break;
+                        }
+                        case 2: {
+                            init.put(i, State.WASTES);
+                            break;
+                        }
+                        case 3: {
+                            init.put(i, State.DEVA);
+                            break;
+                        }
+                        case 4: {
+                            init.put(i, State.DEVB);
+                            break;
+                        }
                     }
                 }
             }
@@ -73,10 +97,8 @@ public class SimulationApp {
                 }
             }
         }
-
         Simulation sim = new Simulation(turns, seed, init, limitOverride);
         sim.run();
-
     }
 
 }
