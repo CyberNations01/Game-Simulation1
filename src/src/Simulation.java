@@ -13,6 +13,7 @@ public class Simulation {
     final Bag bag;
     final Random rng;
     final int turns;
+    final long seed;
     private int currentRound = 0;
 
     public int getCurrentRound() {
@@ -30,8 +31,9 @@ public class Simulation {
                Map<FeedbackToken, Integer> poolLimitOverride) {
         if (turns < 1 || turns > 100) throw new IllegalArgumentException("turns must be 1..100");
         this.turns = turns;
+        this.seed  = seed;
         this.rng = new Random(seed);
-        this.bag = new Bag(rng, 20); // 默认每种上限 20
+        this.bag = new Bag(rng, 20); // Default is 20.
 
         // 上限覆盖
         if (poolLimitOverride != null) {
@@ -108,7 +110,7 @@ public class Simulation {
             System.out.println("Turn " + t + " done.");
             printStacks();
         }
-        exportResultToJson(myStacks, bag, currentRound, turns, timelineCodes);
+        exportResultToJson(myStacks, bag, currentRound, turns, timelineCodes,seed);
     }
 
     private void printStacks() {
@@ -149,8 +151,9 @@ public class Simulation {
             Bag bag,
             int currentRound,
             int maxRounds,
-            List<int[]> timelineCodes
-    ) {
+            List<int[]> timelineCodes,
+            long seed
+            ) {
         ObjectMapper mapper = new ObjectMapper();
 
         // 构建根节点
@@ -183,6 +186,7 @@ public class Simulation {
         gameState.put("current_round", currentRound);
         gameState.put("max_rounds", maxRounds);
         gameState.put("bag_total", bag.totalCount());
+        gameState.put("seed", seed);
         root.set("game_state", gameState);
 
         // tokens
@@ -192,7 +196,7 @@ public class Simulation {
         }
         root.set("tokens", tokens);
 
-        // timeline：每一轮的状态代码数组（按 id=1..11）
+        // timeline：arrays for states in each turn.
         var timeline = mapper.createArrayNode();
         for (int r = 0; r < timelineCodes.size(); r++) {
             ObjectNode round = mapper.createObjectNode();
@@ -204,17 +208,17 @@ public class Simulation {
         }
         root.set("timeline", timeline);
 
-        // 创建 assets 目录（如果不存在）
+        // create assets files.
         File dir = new File("assets");
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        // 生成带时间戳的文件名
+        // generate files with timestamps.
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         File output = new File(dir, "simulation_result_" + timestamp + ".json");
 
-        // 写入文件
+        // write in files.
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(output, root);
             System.out.println("Exported to: " + output.getAbsolutePath());
@@ -223,7 +227,7 @@ public class Simulation {
         }
     }
 
-    // 状态到颜色的映射
+    // reflect the states on colors.
     private static String getColorFromState(State state) {
         return switch (state) {
             case WILDS -> "green";

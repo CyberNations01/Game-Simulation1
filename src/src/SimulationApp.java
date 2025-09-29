@@ -6,7 +6,7 @@ public class SimulationApp {
     // ---------- CLI Entrance ----------
     public static void main(String[] args) {
         int turns  = -1;
-        long seed = 1L;
+        long seed = 2L;
 
         // Initialize the state of 11 stacks.
         Map<Integer, State> init = new HashMap<>();
