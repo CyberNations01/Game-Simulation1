@@ -60,5 +60,23 @@ public class Bag {
 //    int getLimit(FeedbackToken t) { return limitPerType.get(t); }
 //    int getCount(FeedbackToken t) { return counts.get(t); }
 //    int totalCount() { return counts.values().stream().mapToInt(Integer::intValue).sum(); }
+
+    /**
+     *
+     * 获取当前袋子的token总数
+     */
+    public int totalCount() {
+    int total = 0;
+    for (int count : counts.values()) {
+        total += count;
+    }
+    return total;
 }
+
+    /** 获取某种 token 类型的数量（如 FeedbackToken.WILDS） */
+    public int count(FeedbackToken tokenType) {
+        return counts.getOrDefault(tokenType, 0);
+    }
+}
+
 
