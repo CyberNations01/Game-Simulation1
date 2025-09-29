@@ -30,7 +30,7 @@ public class Bag {
     }
 
     /**
-     * 抽一个；若池为空则返回空（Optional）
+     * 抽一个；若池为空则返回空
      */
     Optional<FeedbackToken> drawOne() {
         int total = counts.values().stream().mapToInt(Integer::intValue).sum();
@@ -44,7 +44,7 @@ public class Bag {
             }
             r -= c;
         }
-        return Optional.empty(); // 不应到达
+        return Optional.empty();
     }
 
     /**
@@ -57,10 +57,6 @@ public class Bag {
     Map<FeedbackToken, Integer> snapshot() {
         return new EnumMap<>(counts);
     }
-//    int getLimit(FeedbackToken t) { return limitPerType.get(t); }
-//    int getCount(FeedbackToken t) { return counts.get(t); }
-//    int totalCount() { return counts.values().stream().mapToInt(Integer::intValue).sum(); }
-
     /**
      *
      * 获取当前袋子的token总数

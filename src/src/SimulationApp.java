@@ -3,20 +3,20 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.stream.Collectors;
 
 public class SimulationApp {
-    // ---------- CLI 入口 ----------
+    // ---------- CLI Entrance ----------
     public static void main(String[] args) {
         int turns  = -1;
-        long seed = 1234L;
+        long seed = 1L;
 
-        // 初始 11 个栈的状态（可通过命令行覆盖；这里先都给 WILDS 作为示例）
+        // Initialize the state of 11 stacks.
         Map<Integer, State> init = new HashMap<>();
         System.out.println("Would you like to manually set initial states? (y/n)");
         Scanner in = new Scanner(System.in);
         String choice = in.nextLine().trim().toLowerCase();
 
         if (choice.equals("n")) {
-            // 自动随机初始化
-            Random rng = new Random();
+            // Automatic initialization.
+            Random rng = new Random(50); // set the seed equal to 50.
             turns = rng.nextInt(1,100);
             System.out.println("The turns number randomly set to "+turns+".");
             for (int i = 1; i <= 11; i++) {

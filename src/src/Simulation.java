@@ -59,6 +59,12 @@ public class Simulation {
         // This is to store the result of each turn.
         List<int[]> timelineCodes = new ArrayList<>();
 
+        int[] round0 = new int[myStacks.size()];
+        for (int i = 0; i < myStacks.size(); i++) {
+            round0[i] = getCodeFromState(myStacks.get(i).state);
+        }
+        timelineCodes.add(round0);
+
         for (int t = 1; t <= turns; t++) {
             // 1) 各 MyStack 生成 token 入池（受上限）
             this.currentRound = t;
@@ -190,7 +196,7 @@ public class Simulation {
         var timeline = mapper.createArrayNode();
         for (int r = 0; r < timelineCodes.size(); r++) {
             ObjectNode round = mapper.createObjectNode();
-            round.put("round", r + 1);
+            round.put("round", r);
             var arr = mapper.createArrayNode();
             for (int code : timelineCodes.get(r)) arr.add(code);
             round.set("states", arr);

@@ -3,10 +3,10 @@ public enum FeedbackToken {
 
     void resolveOn(MyStack myStack) {
         switch (this) {
-            case WILDS -> myStack.state = State.WILDS;   // 置为 WILDS
-            case DEVA -> myStack.state = State.WASTES;  // DEVA 令牌：把状态改成 WASTES
+            case WILDS -> myStack.state = State.WILDS;   // set to wilds.
+            case DEVA -> myStack.state = State.WASTES;  // DevA token: set the state to wastes.
             case WASTES, DEVB -> {
-                // 无效果 —— 保持现状
+                // No effect at this stage.
             }
         }
     }
