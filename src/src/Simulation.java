@@ -51,17 +51,6 @@ public class Simulation {
                         .collect(Collectors.joining("  ")));
     }
 
-//    private void debugBag(String when) {
-//        System.out.printf(
-//                "Bag@%s  Wi=%d/%d  Wa=%d/%d  A=%d/%d  B=%d/%d  total=%d%n",
-//                when,
-//                bag.getCount(FeedbackToken.WILDS),  bag.getLimit(FeedbackToken.WILDS),
-//                bag.getCount(FeedbackToken.WASTES), bag.getLimit(FeedbackToken.WASTES),
-//                bag.getCount(FeedbackToken.DEVA),   bag.getLimit(FeedbackToken.DEVA),
-//                bag.getCount(FeedbackToken.DEVB),   bag.getLimit(FeedbackToken.DEVB),
-//                bag.totalCount()
-//        );
-//    }
 
     /**
      * 每回合：1) 生成 11 token 入池；2) 抽 11 个按顺序结算；3) 按规则回收/保留
