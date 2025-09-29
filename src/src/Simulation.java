@@ -38,7 +38,7 @@ public class Simulation {
             for (var e : poolLimitOverride.entrySet()) bag.setLimit(e.getKey(), e.getValue());
         }
 
-        // 构建 11 个 Stacks
+        // Create 11 Stacks.
         // 1: inner, 2-7: middle, 8-11: outer
         for (int id = 1; id <= 11; id++) {
             StackRing ring = (id == 1) ? StackRing.INNER :
@@ -56,13 +56,17 @@ public class Simulation {
      * 每回合：1) 生成 11 token 入池；2) 抽 11 个按顺序结算；3) 按规则回收/保留
      */
     void run() {
+        // This is to store the result of each turn.
+        List<int[]> timelineCodes = new ArrayList<>();
+
         for (int t = 1; t <= turns; t++) {
             // 1) 各 MyStack 生成 token 入池（受上限）
             this.currentRound = t;
+
             for (MyStack s : myStacks) {
                 bag.add(toTokenFromState(s.state));
             }
-//                debugBag("afterAdd");
+
 
             // 2) 抽 11 个并按 ORDER 结算
             List<FeedbackToken> drawn = new ArrayList<>();
@@ -74,7 +78,7 @@ public class Simulation {
                 MyStack target = myStacks.get(pos - 1); // id 从 1 开始，list 从 0 开始
                 tok.resolveOn(target);
             }
-//                debugBag("afterDraw");
+
 
 
             // 3) 回收：2-7 回 Pool；1、8–11 留在板上（不回池）
@@ -85,13 +89,20 @@ public class Simulation {
                     bag.putBack(tok);
                 }
             }
-//                debugBag("afterPutBack");
+
+
+            // Record the result of this turn.
+            int[] snapshot = new int[myStacks.size()];
+            for (int i = 0; i < myStacks.size(); i++) {
+                snapshot[i] = getCodeFromState(myStacks.get(i).state);
+            }
+            timelineCodes.add(snapshot);
 
             // 输出当回合摘要
             System.out.println("Turn " + t + " done.");
             printStacks();
         }
-        exportResultToJson(myStacks, bag, currentRound, turns);
+        exportResultToJson(myStacks, bag, currentRound, turns, timelineCodes);
     }
 
     private void printStacks() {
@@ -116,17 +127,37 @@ public class Simulation {
         return all[rng.nextInt(all.length)];
     }
 
+
+    // Transform the state into numbers.
+    private static int getCodeFromState(State state) {
+        return switch (state) {
+            case WILDS  -> 1;
+            case WASTES -> 2;
+            case DEVA   -> 3;
+            case DEVB   -> 4;
+        };
+    }
+
     public static void exportResultToJson(
             List<MyStack> myStacks,
             Bag bag,
             int currentRound,
-            int maxRounds
+            int maxRounds,
+            List<int[]> timelineCodes
     ) {
         ObjectMapper mapper = new ObjectMapper();
 
         // 构建根节点
         ObjectNode root = mapper.createObjectNode();
         root.put("version", 1);
+
+        // legend：Status Code List.
+        ObjectNode legend = mapper.createObjectNode();
+        legend.put("WILDS", 1);
+        legend.put("WASTES", 2);
+        legend.put("DEVA", 3);
+        legend.put("DEVB", 4);
+        root.set("legend", legend);
 
         // 构建 board.hexes
         ObjectNode board = mapper.createObjectNode();
@@ -154,6 +185,18 @@ public class Simulation {
             tokens.put(token.name(), bag.count(token));
         }
         root.set("tokens", tokens);
+
+        // timeline：每一轮的状态代码数组（按 id=1..11）
+        var timeline = mapper.createArrayNode();
+        for (int r = 0; r < timelineCodes.size(); r++) {
+            ObjectNode round = mapper.createObjectNode();
+            round.put("round", r + 1);
+            var arr = mapper.createArrayNode();
+            for (int code : timelineCodes.get(r)) arr.add(code);
+            round.set("states", arr);
+            timeline.add(round);
+        }
+        root.set("timeline", timeline);
 
         // 创建 assets 目录（如果不存在）
         File dir = new File("assets");
