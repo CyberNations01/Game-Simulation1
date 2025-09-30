@@ -52,9 +52,9 @@ java -cp ".:gson-2.10.1.jar" GameVisualizer
 mvn clean compile exec:java -Dexec.mainClass="visualization.GameVisualizer"
 ```
 
-## JSON数据格式
+## JSON Data Format
 
-程序支持以下JSON格式：
+The program supports the following JSON format:
 
 ```json
 {
@@ -81,15 +81,18 @@ mvn clean compile exec:java -Dexec.mainClass="visualization.GameVisualizer"
 }
 ```
 
-## 六边形颜色
+## Hexagon Colors
 
-- 绿色 (green) - Wilds类型
-- 棕色 (brown) - Wastes类型  
-- 蓝色 (blue) - DevA类型
-- 粉色 (pink) - DevB类型
+- Green (green) - Wilds type
+- Brown (brown) - Wastes type  
+- Blue (blue) - DevA type
+- Pink (pink) - DevB type
 
-## 系统要求
+## System Requirements
 
-- Java 8或更高版本
-- Maven 3.6或更高版本（可选）
+- Java 8 or higher
+- Maven 3.6 or higher (optional)
+
+## Development Status
+
 The first stage of simulation.
