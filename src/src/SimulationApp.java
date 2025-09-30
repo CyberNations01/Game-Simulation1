@@ -6,7 +6,7 @@ public class SimulationApp {
     // ---------- CLI Entrance ----------
     public static void main(String[] args) {
         int turns  = -1;
-        long seed = 2L;
+        long seed = 5L;
 
         // Initialize the state of 11 stacks.
         Map<Integer, State> init = new HashMap<>();
@@ -74,17 +74,17 @@ public class SimulationApp {
             }
         }
 
-        // 上限覆盖（默认每种 20）
+
         Map<FeedbackToken, Integer> limitOverride = new EnumMap<>(FeedbackToken.class);
 
-        // 解析简单参数：--turns N --eed S --s3=DEVA --limit=WILDS:30,DEVA:10
+        // Some parameters: --turns=N --seed=S --s3=DEVA --limit=WILDS:30,DEVA:10
         for (String a : args) {
             if (a.startsWith("--turns=")) {
                 turns = Integer.parseInt(a.substring(8));
             } else if (a.startsWith("--seed=")) {
                 seed = Long.parseLong(a.substring(7));
             } else if (a.startsWith("--s")) {
-                // 例如 --s3=DEVA 表示 stack#3 初始状态为 DEVA
+                // s3 means that the initial state is DevA.
                 String[] kv = a.substring(3).split("=");
                 int id = Integer.parseInt(kv[0]);
                 State st = State.valueOf(kv[1].toUpperCase());

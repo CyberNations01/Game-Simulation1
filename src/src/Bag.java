@@ -21,7 +21,7 @@ public class Bag {
     }
 
     /**
-     * 向池中加入一个 token（受上限限制）
+     * Add a token to the pool (subject to the upper limit).
      */
     void add(FeedbackToken t) {
         int c = counts.get(t);
@@ -30,7 +30,7 @@ public class Bag {
     }
 
     /**
-     * 抽一个；若池为空则返回空
+     * Draw one; if the pool is empty, return null.
      */
     Optional<FeedbackToken> drawOne() {
         int total = counts.values().stream().mapToInt(Integer::intValue).sum();
@@ -48,7 +48,7 @@ public class Bag {
     }
 
     /**
-     * 放回一个（不计上限，用于“回 Pool”的回收逻辑）
+     * Return one (without upper limit, for the "return to pool" recycling logic)
      */
     void putBack(FeedbackToken t) {
         counts.put(t, counts.get(t) + 1);
@@ -59,7 +59,7 @@ public class Bag {
     }
     /**
      *
-     * 获取当前袋子的token总数
+     * Get the total number of tokens in the current bag.
      */
     public int totalCount() {
     int total = 0;
@@ -69,7 +69,7 @@ public class Bag {
     return total;
 }
 
-    /** 获取某种 token 类型的数量（如 FeedbackToken.WILDS） */
+    /** Retrieve the quantity of a specific token type.*/
     public int count(FeedbackToken tokenType) {
         return counts.getOrDefault(tokenType, 0);
     }

@@ -20,10 +20,10 @@ public class Simulation {
         return currentRound;
     }
 
-    // 位置顺序（与图一致）：1(inner), 2-7(middle), 8-11(outer)
+    // Thw circles: 1(inner), 2-7(middle), 8-11(outer)
     static final List<Integer> ORDER = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
-    // 假设：位置 1、8–11 的令牌“留在板上”（不回 Pool），其余 2–7 回 Pool
+    // Tokens in positions 1, 8–11 do not return to the Pool, while the remaining tokens in positions 2–7 return to the Pool.
     static final Set<Integer> PERSIST_POSITIONS = Set.of(1, 8, 9, 10, 11);
 
     Simulation(int turns, long seed,
@@ -35,7 +35,7 @@ public class Simulation {
         this.rng = new Random(seed);
         this.bag = new Bag(rng, 20); // Default is 20.
 
-        // 上限覆盖
+        // Set the bag limit to 20.
         if (poolLimitOverride != null) {
             for (var e : poolLimitOverride.entrySet()) bag.setLimit(e.getKey(), e.getValue());
         }
@@ -55,7 +55,7 @@ public class Simulation {
 
 
     /**
-     * 每回合：1) 生成 11 token 入池；2) 抽 11 个按顺序结算；3) 按规则回收/保留
+     * Each turn: 1) generate 11 tokens and put them into the bag; 2) Draw 11 cards and resolve them in sequence. 3) Recycle or retain according to the rules.
      */
     void run() {
         // This is to store the result of each turn.
@@ -68,7 +68,7 @@ public class Simulation {
         timelineCodes.add(round0);
 
         for (int t = 1; t <= turns; t++) {
-            // 1) 各 MyStack 生成 token 入池（受上限）
+            // 1) Each MyStack generates tokens into the pool (subject to the cap).
             this.currentRound = t;
 
             for (MyStack s : myStacks) {
@@ -76,20 +76,20 @@ public class Simulation {
             }
 
 
-            // 2) 抽 11 个并按 ORDER 结算
+            // 2) Draw 11 cards and settle according to ORDER.
             List<FeedbackToken> drawn = new ArrayList<>();
             for (int pos : ORDER) {
                 Optional<FeedbackToken> opt = bag.drawOne();
-                FeedbackToken tok = opt.orElseGet(() -> randomAnyToken()); // 池空时兜底随机（极端情况）
+                FeedbackToken tok = opt.orElseGet(() -> randomAnyToken()); // When the pool is empty, default to random selection (in extreme cases).
                 drawn.add(tok);
-                // 即时结算到对应 MyStack
-                MyStack target = myStacks.get(pos - 1); // id 从 1 开始，list 从 0 开始
+                // Immediately settle to the corresponding MyStack.
+                MyStack target = myStacks.get(pos - 1); // ids start at 1, while lists start at 0.
                 tok.resolveOn(target);
             }
 
 
 
-            // 3) 回收：2-7 回 Pool；1、8–11 留在板上（不回池）
+            // 3) recycle：put 2-7 into the pool and 1, 8–11 remain on the board (do not return to pool)
             for (int i = 0; i < ORDER.size(); i++) {
                 int pos = ORDER.get(i);
                 FeedbackToken tok = drawn.get(i);
@@ -106,7 +106,7 @@ public class Simulation {
             }
             timelineCodes.add(snapshot);
 
-            // 输出当回合摘要
+            // print the summary of this turn.
             System.out.println("Turn " + t + " done.");
             printStacks();
         }
@@ -156,7 +156,7 @@ public class Simulation {
             ) {
         ObjectMapper mapper = new ObjectMapper();
 
-        // 构建根节点
+        // Create the root.
         ObjectNode root = mapper.createObjectNode();
         root.put("version", 1);
 
@@ -168,7 +168,7 @@ public class Simulation {
         legend.put("DEVB", 4);
         root.set("legend", legend);
 
-        // 构建 board.hexes
+        // create board.hexes
         ObjectNode board = mapper.createObjectNode();
         var hexesArray = mapper.createArrayNode();
         for (MyStack s : myStacks) {
