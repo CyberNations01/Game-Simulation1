@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "board": {
+    "hexes": [
+      { "id": 1, "baseType": "Wilds", "topType": null },
+      { "id": 2, "baseType": "Wastes", "topType": "DevA" },
+      { "id": 3, "baseType": "Wilds", "topType": "DevB" },
+      { "id": 4, "baseType": "Wastes", "topType": null },
+      { "id": 5, "baseType": "Wilds", "topType": "DevA" },
+      { "id": 6, "baseType": "Wastes", "topType": null },
+      { "id": 7, "baseType": "Wilds", "topType": "DevB" },
+      { "id": 8, "baseType": "Wastes", "topType": "DevA" },
+      { "id": 9, "baseType": "Wilds", "topType": null },
+      { "id": 10, "baseType": "Wastes", "topType": "DevB" },
+      { "id": 11, "baseType": "Wilds", "topType": "DevA" }
+    ]
+  },
+  "game_state": {
+    "current_round": 1,
+    "max_rounds": 50,
+    "bag_total": 100
+  },
+  "tokens": {
+    "Wilds": 25,
+    "Wastes": 25,
+    "DevA": 25,
+    "DevB": 25
+  }
+}
