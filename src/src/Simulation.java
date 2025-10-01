@@ -1,4 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
@@ -60,6 +61,8 @@ public class Simulation {
     void run() {
         // This is to store the result of each turn.
         List<int[]> timelineCodes = new ArrayList<>();
+        List<ObjectNode> roundSnapshots = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
 
         int[] round0 = new int[myStacks.size()];
         for (int i = 0; i < myStacks.size(); i++) {
@@ -69,6 +72,7 @@ public class Simulation {
 
         for (int t = 1; t <= turns; t++) {
             // 1) Each MyStack generates tokens into the pool (subject to the cap).
+            roundSnapshots.add(createRoundSnapshot(mapper, myStacks, bag, currentRound, seed, turns));
             this.currentRound = t;
 
             for (MyStack s : myStacks) {
@@ -86,7 +90,6 @@ public class Simulation {
                 MyStack target = myStacks.get(pos - 1); // ids start at 1, while lists start at 0.
                 tok.resolveOn(target);
             }
-
 
 
             // 3) recycle：put 2-7 into the pool and 1, 8–11 remain on the board (do not return to pool)
@@ -110,7 +113,8 @@ public class Simulation {
             System.out.println("Turn " + t + " done.");
             printStacks();
         }
-        exportResultToJson(myStacks, bag, currentRound, turns, timelineCodes,seed);
+        roundSnapshots.add(createRoundSnapshot(mapper, myStacks, bag, currentRound, seed, turns));
+        exportResultToJson(myStacks, bag, currentRound, turns, timelineCodes, roundSnapshots, seed);
     }
 
     private void printStacks() {
@@ -152,6 +156,7 @@ public class Simulation {
             int currentRound,
             int maxRounds,
             List<int[]> timelineCodes,
+            List<ObjectNode> roundSnapshots,
             long seed
             ) {
         ObjectMapper mapper = new ObjectMapper();
@@ -208,6 +213,12 @@ public class Simulation {
         }
         root.set("timeline", timeline);
 
+        ArrayNode roundOutputs = mapper.createArrayNode();
+        for (ObjectNode node : roundSnapshots) {
+            roundOutputs.add(node);
+        }
+        root.set("round_outputs", roundOutputs);
+
         // create assets files.
         File dir = new File("assets");
         if (!dir.exists()) {
@@ -215,13 +226,13 @@ public class Simulation {
         }
 
         // generate files with timestamps.
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
         File output = new File(dir, "simulation_result_" + timestamp + ".json");
 
         // write in files.
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(output, root);
-            System.out.println("Exported to: " + output.getAbsolutePath());
+            //System.out.println("Exported to: " + output.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -235,5 +246,47 @@ public class Simulation {
             case DEVA -> "pink";
             case DEVB -> "blue";
         };
+    }
+    private ObjectNode createRoundSnapshot(
+            ObjectMapper mapper,
+            List<MyStack> myStacks,
+            Bag bag,
+            int currentRound,
+            long seed,
+            int max_round
+    ) {
+        ObjectNode snapshot = mapper.createObjectNode();
+
+        snapshot.put("round: ", currentRound);
+
+        // 添加 hex 状态信息
+        ObjectNode board = mapper.createObjectNode();
+        ArrayNode hexesArray = mapper.createArrayNode();
+        for (MyStack s : myStacks) {
+            ObjectNode hex = mapper.createObjectNode();
+            hex.put("id", s.id);
+            hex.put("type", s.state.name());
+            hex.put("color", getColorFromState(s.state));
+            hexesArray.add(hex);
+        }
+        board.set("hexes", hexesArray);
+        snapshot.set("board", board);
+
+        ObjectNode game = mapper.createObjectNode();
+        game.put("current_round", currentRound);
+        game.put("max_round", max_round);
+        game.put("bag_total", bag.totalCount());
+        game.put("seed", seed);
+
+        snapshot.set("game_state", game);
+
+        // 添加当前 bag 状态
+        ObjectNode tokens = mapper.createObjectNode();
+        for (FeedbackToken token : FeedbackToken.values()) {
+            tokens.put(token.name(), bag.count(token));
+        }
+        snapshot.set("tokens", tokens);
+
+        return snapshot;
     }
 }

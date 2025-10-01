@@ -10,7 +10,7 @@ public class SimulationApp {
 
         // Initialize the state of 11 stacks.
         Map<Integer, State> init = new HashMap<>();
-        System.out.println("Would you like to manually set initial states? (y/n)");
+        System.out.println("Would you like to manually set initial states or just put in a ratio? (y/n/r)");
         Scanner in = new Scanner(System.in);
         String choice = in.nextLine().trim().toLowerCase();
 
@@ -31,7 +31,7 @@ public class SimulationApp {
                 init.put(i, st);
                 System.out.println("Stack " + i + " randomly set to " + st);
             }
-        } else {
+        } else if(choice.equals("y")){
             System.out.println("Please type your turn number in (1 - 100).");
             //System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
             boolean invalid = true;
@@ -72,6 +72,35 @@ public class SimulationApp {
                     }
                 }
             }
+        }else {
+//            System.out.println("Please type your turn number in (1 - 100).");
+//            //System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
+//            boolean invalid = true;
+//            while (invalid) {
+//                Scanner turn = new Scanner(System.in);
+//                turns = Integer.parseInt(turn.next());
+//                if (turns >= 1 && turns <= 100) {
+//                    invalid = false;
+//                } else {
+//                    System.out.println("Invalid input! Please input again!");
+//                }
+//            }
+            turns = 10;
+            Random rng = new Random();
+            //System.out.println("We only test on the ratio of WILD and DEVA now, please type in the number of WILD you want in this 11 stacks.");
+            //Scanner ratio = new Scanner(System.in);
+
+//            if(num<0||num>11) {
+//                System.out.println("Invalid input! Please type in a number between 0-11.");
+//            }else {
+//                Random rng = new Random(); // 或者传入 Simulation 的 seed
+//                init = generateWildDevaState(num, rng);
+//            }
+            for (int i=0; i<=11;i++){
+                for(int k=0; k<10; k++){
+                    init = generateWildDevaState(i, rng);
+                }
+            }
         }
 
 
@@ -101,4 +130,27 @@ public class SimulationApp {
         sim.run();
     }
 
+    public static Map<Integer, State> generateWildDevaState(int wildCount, Random rng) {
+        if (wildCount < 0 || wildCount > 11) {
+            throw new IllegalArgumentException("WILD count must be between 0 and 11.");
+        }
+
+        Map<Integer, State> initialStates = new HashMap<>();
+
+        // 生成 1~11 中的不重复 wildCount 个随机位置
+        List<Integer> positions = new ArrayList<>();
+        for (int i = 1; i <= 11; i++) positions.add(i);
+        Collections.shuffle(positions, rng);
+        List<Integer> wildPositions = positions.subList(0, wildCount);
+
+        // 设置状态
+        for (int i = 1; i <= 11; i++) {
+            if (wildPositions.contains(i)) {
+                initialStates.put(i, State.WILDS);
+            } else {
+                initialStates.put(i, State.DEVA);
+            }
+        }
+        return initialStates;
+    }
 }
