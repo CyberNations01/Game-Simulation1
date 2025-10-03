@@ -31,6 +31,28 @@ public class SimulationApp {
                 init.put(i, st);
                 System.out.println("Stack " + i + " randomly set to " + st);
             }
+            Map<FeedbackToken, Integer> limitOverride = new EnumMap<>(FeedbackToken.class);
+            for (String a : args) {
+                if (a.startsWith("--turns=")) {
+                    turns = Integer.parseInt(a.substring(8));
+                } else if (a.startsWith("--seed=")) {
+                    seed = Long.parseLong(a.substring(7));
+                } else if (a.startsWith("--s")) {
+                    // s3 means that the initial state is DevA.
+                    String[] kv = a.substring(3).split("=");
+                    int id = Integer.parseInt(kv[0]);
+                    State st = State.valueOf(kv[1].toUpperCase());
+                    init.put(id, st);
+                } else if (a.startsWith("--limit=")) {
+                    String spec = a.substring(8); // WILDS:30,DEVA:10
+                    for (String part : spec.split(",")) {
+                        String[] kv = part.split(":");
+                        limitOverride.put(FeedbackToken.valueOf(kv[0].toUpperCase()), Integer.parseInt(kv[1]));
+                    }
+                }
+            }
+            Simulation sim = new Simulation(turns, seed, init, limitOverride);
+            sim.run();
         } else if(choice.equals("y")){
             System.out.println("Please type your turn number in (1 - 100).");
             //System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
@@ -72,6 +94,28 @@ public class SimulationApp {
                     }
                 }
             }
+            Map<FeedbackToken, Integer> limitOverride = new EnumMap<>(FeedbackToken.class);
+            for (String a : args) {
+                if (a.startsWith("--turns=")) {
+                    turns = Integer.parseInt(a.substring(8));
+                } else if (a.startsWith("--seed=")) {
+                    seed = Long.parseLong(a.substring(7));
+                } else if (a.startsWith("--s")) {
+                    // s3 means that the initial state is DevA.
+                    String[] kv = a.substring(3).split("=");
+                    int id = Integer.parseInt(kv[0]);
+                    State st = State.valueOf(kv[1].toUpperCase());
+                    init.put(id, st);
+                } else if (a.startsWith("--limit=")) {
+                    String spec = a.substring(8); // WILDS:30,DEVA:10
+                    for (String part : spec.split(",")) {
+                        String[] kv = part.split(":");
+                        limitOverride.put(FeedbackToken.valueOf(kv[0].toUpperCase()), Integer.parseInt(kv[1]));
+                    }
+                }
+            }
+            Simulation sim = new Simulation(turns, seed, init, limitOverride);
+            sim.run();
         }else {
 //            System.out.println("Please type your turn number in (1 - 100).");
 //            //System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
@@ -97,37 +141,34 @@ public class SimulationApp {
 //                init = generateWildDevaState(num, rng);
 //            }
             for (int i=0; i<=11;i++){
-                for(int k=0; k<10; k++){
+                for(int k=0; k<30; k++){
                     init = generateWildDevaState(i, rng);
+                    // Some parameters: --turns=N --seed=S --s3=DEVA --limit=WILDS:30,DEVA:10
+                    Map<FeedbackToken, Integer> limitOverride = new EnumMap<>(FeedbackToken.class);
+                    for (String a : args) {
+                        if (a.startsWith("--turns=")) {
+                            turns = Integer.parseInt(a.substring(8));
+                        } else if (a.startsWith("--seed=")) {
+                            seed = Long.parseLong(a.substring(7));
+                        } else if (a.startsWith("--s")) {
+                            // s3 means that the initial state is DevA.
+                            String[] kv = a.substring(3).split("=");
+                            int id = Integer.parseInt(kv[0]);
+                            State st = State.valueOf(kv[1].toUpperCase());
+                            init.put(id, st);
+                        } else if (a.startsWith("--limit=")) {
+                            String spec = a.substring(8); // WILDS:30,DEVA:10
+                            for (String part : spec.split(",")) {
+                                String[] kv = part.split(":");
+                                limitOverride.put(FeedbackToken.valueOf(kv[0].toUpperCase()), Integer.parseInt(kv[1]));
+                            }
+                        }
+                    }
+                    Simulation sim = new Simulation(turns, seed, init, limitOverride);
+                    sim.run();
                 }
             }
         }
-
-
-        Map<FeedbackToken, Integer> limitOverride = new EnumMap<>(FeedbackToken.class);
-
-        // Some parameters: --turns=N --seed=S --s3=DEVA --limit=WILDS:30,DEVA:10
-        for (String a : args) {
-            if (a.startsWith("--turns=")) {
-                turns = Integer.parseInt(a.substring(8));
-            } else if (a.startsWith("--seed=")) {
-                seed = Long.parseLong(a.substring(7));
-            } else if (a.startsWith("--s")) {
-                // s3 means that the initial state is DevA.
-                String[] kv = a.substring(3).split("=");
-                int id = Integer.parseInt(kv[0]);
-                State st = State.valueOf(kv[1].toUpperCase());
-                init.put(id, st);
-            } else if (a.startsWith("--limit=")) {
-                String spec = a.substring(8); // WILDS:30,DEVA:10
-                for (String part : spec.split(",")) {
-                    String[] kv = part.split(":");
-                    limitOverride.put(FeedbackToken.valueOf(kv[0].toUpperCase()), Integer.parseInt(kv[1]));
-                }
-            }
-        }
-        Simulation sim = new Simulation(turns, seed, init, limitOverride);
-        sim.run();
     }
 
     public static Map<Integer, State> generateWildDevaState(int wildCount, Random rng) {

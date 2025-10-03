@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -226,8 +227,11 @@ public class Simulation {
         }
 
         // generate files with timestamps.
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
-        File output = new File(dir, "simulation_result_" + timestamp + ".json");
+        String file_name= String.format("simulation_result_%s_%d.json",
+                new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date()),
+                System.nanoTime()
+        );
+        File output = new File(dir, file_name);
 
         // write in files.
         try {
@@ -236,6 +240,7 @@ public class Simulation {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("✅");
     }
 
     // reflect the states on colors.
