@@ -66,6 +66,38 @@ public class SimulationApp {
                     System.out.println("Invalid input! Please input again!");
                 }
             }
+
+            System.out.println("Please type in your maximum number of feedback tokens for each type (WILDS, WASTES, DEVA, DEVB), separated by spaces:");
+            boolean validInput = false;
+            int[] limits = new int[4];// Default values indicating no limits set
+            limits[0] = -1;
+            while (!validInput) {
+                Scanner tokenInput = new Scanner(System.in);
+                String line = tokenInput.nextLine();
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length != 4) {
+                    System.out.println("Invalid input! Please enter exactly four numbers separated by spaces.");
+                    continue;
+                }
+                try {
+                    int wildsLimit = Integer.parseInt(parts[0]);
+                    int wastesLimit = Integer.parseInt(parts[1]);
+                    int devaLimit = Integer.parseInt(parts[2]);
+                    int devbLimit = Integer.parseInt(parts[3]);
+                    if (wildsLimit < 0 || wastesLimit < 0 || devaLimit < 0 || devbLimit < 0) {
+                        System.out.println("Invalid input! Please enter non-negative integers.");
+                        continue;
+                    }
+                    validInput = true;
+                    limits[0] = wildsLimit;
+                    limits[1] = wastesLimit;
+                    limits[2] = devaLimit;
+                    limits[3] = devbLimit;
+                    System.out.println("Token limits set to - WILDS: " + wildsLimit + ", WASTES: " + wastesLimit + ", DEVA: " + devaLimit + ", DEVB: " + devbLimit);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input! Please enter valid integers.");
+                }
+            }
             for (int i = 1; i <= 11; i++) {
                 System.out.println("Stack " + i + ": Please type your initial states, choose one: 1 - WILDS, 2 - WASTES, 3 - DEVA, 4 - DEVB.");
                 Scanner ins = new Scanner(System.in);
@@ -114,7 +146,7 @@ public class SimulationApp {
                     }
                 }
             }
-            Simulation sim = new Simulation(turns, seed, init, limitOverride);
+            Simulation sim = new Simulation(turns, seed, init, limitOverride,limits);
             sim.run();
         }else {
 //            System.out.println("Please type your turn number in (1 - 100).");
@@ -141,7 +173,7 @@ public class SimulationApp {
 //                init = generateWildDevaState(num, rng);
 //            }
             for (int i=0; i<=11;i++){
-                for(int k=0; k<30; k++){
+              for(int k=0; k<30; k++){
                     init = generateWildDevaState(i, rng);
                     // Some parameters: --turns=N --seed=S --s3=DEVA --limit=WILDS:30,DEVA:10
                     Map<FeedbackToken, Integer> limitOverride = new EnumMap<>(FeedbackToken.class);
@@ -166,7 +198,7 @@ public class SimulationApp {
                     }
                     Simulation sim = new Simulation(turns, seed, init, limitOverride);
                     sim.run();
-                }
+               }
             }
         }
     }

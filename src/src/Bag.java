@@ -6,13 +6,38 @@ import java.util.Random;
 public class Bag {
     final EnumMap<FeedbackToken, Integer> limitPerType = new EnumMap<>(FeedbackToken.class);
     final EnumMap<FeedbackToken, Integer> counts = new EnumMap<>(FeedbackToken.class);
-    final Random rng;
+    Random rng;
+//    int wild;
+//    int waste;
+//    int devA;
+//    int devB;
 
     Bag(Random rng, int defaultLimitEach) {
         this.rng = rng;
         for (FeedbackToken t : FeedbackToken.values()) {
             limitPerType.put(t, defaultLimitEach);
             counts.put(t, 0);
+        }
+    }
+
+    Bag(Random rng, int[] limits, int defaultLimitEach) {
+        this.rng = rng;
+        if(limits[0] != -1) {
+//           this.wild = limits[0];
+//           this.waste = limits[1];
+//           this.devA = limits[2];
+//           this.devB = limits[3];
+           for (int i = 0; i < limits.length; i++) {
+               FeedbackToken t = FeedbackToken.values()[i];
+               limitPerType.put(t, limits[i]);
+               counts.put(t, 0);
+           }
+        }
+        else {
+            for (FeedbackToken t : FeedbackToken.values()) {
+                limitPerType.put(t, defaultLimitEach);
+                counts.put(t, 0);
+            }
         }
     }
 

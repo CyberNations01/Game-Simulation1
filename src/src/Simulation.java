@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +53,33 @@ public class Simulation {
                         .collect(Collectors.joining("  ")));
     }
 
+    Simulation(int turns, long seed,
+               Map<Integer, State> initialStates,
+               Map<FeedbackToken, Integer> poolLimitOverride,
+               int[] poolLimitsArray) {
+        if (turns < 1 || turns > 100) throw new IllegalArgumentException("turns must be 1..100");
+        this.turns = turns;
+        this.seed  = seed;
+        this.rng = new Random(seed);
+        this.bag = new Bag(rng, poolLimitsArray, 20); // Default is 20.
+
+        // Set the bag limit to 20.
+        if (poolLimitOverride != null) {
+            for (var e : poolLimitOverride.entrySet()) bag.setLimit(e.getKey(), e.getValue());
+        }
+
+        // Create 11 Stacks.
+        // 1: inner, 2-7: middle, 8-11: outer
+        for (int id = 1; id <= 11; id++) {
+            StackRing ring = (id == 1) ? StackRing.INNER :
+                    (id >= 2 && id <= 7) ? StackRing.MIDDLE : StackRing.OUTER;
+            State init = initialStates.getOrDefault(id, State.WILDS); // Default to WILDS, modify as needed
+            myStacks.add(new MyStack(id, ring, init));
+        }
+        System.out.println("Init states => " +
+                myStacks.stream().map(s -> s.id + ":" + s.state.name())
+                        .collect(Collectors.joining("  ")));
+    }
 
     /**
      * Each turn: 1) generate 11 tokens and put them into the bag; 2) Draw 11 cards and resolve them in sequence. 3) Recycle or retain according to the rules.
@@ -173,6 +198,13 @@ public class Simulation {
         legend.put("DEVA", 3);
         legend.put("DEVB", 4);
         root.set("legend", legend);
+
+        ObjectNode maximum_tokens = mapper.createObjectNode();
+        maximum_tokens.put("WILDS", bag.limitPerType.get(FeedbackToken.WILDS));
+        maximum_tokens.put("WASTES", bag.limitPerType.get(FeedbackToken.WASTES));
+        maximum_tokens.put("DEVA", bag.limitPerType.get(FeedbackToken.DEVA));
+        maximum_tokens.put("DEVB", bag.limitPerType.get(FeedbackToken.DEVB));
+        root.set("maximum_tokens", maximum_tokens);
 
         // create board.hexes
         ObjectNode board = mapper.createObjectNode();
