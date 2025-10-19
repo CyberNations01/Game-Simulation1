@@ -97,14 +97,14 @@ public class HexagonDrawer {
     }
     
     private void drawHexagon(Graphics2D g2d, HexData hex, int centerX, int centerY) {
-        // Draw base layer (Wilds/Wastes)
+        // Draw base layer (Wilds/Wastes/Gray)
         Path2D basePath = createHexagonPath(centerX, centerY, HEX_SIZE);
         Color baseColor = getColorFromString(hex.getBaseType());
         g2d.setColor(baseColor);
         g2d.fill(basePath);
         
         // Draw top layer (DevA/DevB) if exists
-        if (hex.getTopType() != null && (hex.getTopType().equals("DevA") || hex.getTopType().equals("DevB"))) {
+        if (hex.getTopType() != null && isDevelopmentType(hex.getTopType())) {
             int topSize = (int)(HEX_SIZE * 0.6); // Smaller, 60% size
             Path2D topPath = createHexagonPath(centerX, centerY, topSize);
             Color topColor = getColorFromString(hex.getTopType());
@@ -118,7 +118,7 @@ public class HexagonDrawer {
         g2d.draw(basePath);
         
         // Draw border for top layer if exists
-        if (hex.getTopType() != null && (hex.getTopType().equals("DevA") || hex.getTopType().equals("DevB"))) {
+        if (hex.getTopType() != null && isDevelopmentType(hex.getTopType())) {
             int topSize = (int)(HEX_SIZE * 0.6);
             Path2D topPath = createHexagonPath(centerX, centerY, topSize);
             g2d.setColor(Color.BLACK);
@@ -186,6 +186,13 @@ public class HexagonDrawer {
         }
     }
     
+    private boolean isDevelopmentType(String type) {
+        if (type == null) return false;
+        String lowerType = type.toLowerCase();
+        return lowerType.equals("deva") || lowerType.equals("devb") || 
+               lowerType.equals("dev a") || lowerType.equals("dev b");
+    }
+    
     private Color getColorFromString(String colorName) {
         switch (colorName.toLowerCase()) {
             case "green":
@@ -200,11 +207,15 @@ public class HexagonDrawer {
                 return new Color(0xff0000); // Red: #ff0000
             case "yellow":
                 return new Color(0xffff00); // Yellow: #ffff00
+            case "gray":
+                return new Color(0x808080); // Gray: #808080
             // Handle type names
             case "wilds":
-                return new Color(0x51ad2f); // Wilds -> Green
+            case "wild":
+                return new Color(0x51ad2f); // Wilds/Wild -> Green
             case "wastes":
-                return new Color(0xa17a6d); // Wastes -> Brown
+            case "waste":
+                return new Color(0xa17a6d); // Wastes/Waste -> Brown
             case "deva":
                 return new Color(0x0ca3dd); // DevA -> Blue
             case "devb":

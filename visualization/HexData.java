@@ -7,13 +7,6 @@ public class HexData {
     
     public HexData() {}
     
-    public HexData(int id, String color, String type) {
-        this.id = id;
-        this.color = color;
-        this.type = type;
-        this.baseType = type; // By default baseType and type are the same
-        this.topType = null;
-    }
     
     public HexData(int id, String baseType, String topType, boolean isLayered) {
         this.id = id;
@@ -30,6 +23,32 @@ public class HexData {
         this.topType = topType;
         this.type = type;
         this.color = color;
+    }
+    
+    // Constructor for single-type formats (Java/C format)
+    public HexData(int id, String type, String color) {
+        this.id = id;
+        this.color = color;
+        this.type = type;
+        
+        // Map single type to baseType and topType based on type
+        if (isDevelopmentType(type)) {
+            // For DevA/DevB, set as topType with gray base
+            this.topType = type;
+            this.baseType = "Gray"; // Special base type for development tiles
+        } else {
+            // For Wilds/Wastes, set as baseType only
+            this.baseType = type;
+            this.topType = null;
+        }
+    }
+    
+    // Helper method to determine if a type is a development type
+    private boolean isDevelopmentType(String type) {
+        if (type == null) return false;
+        String lowerType = type.toLowerCase();
+        return lowerType.equals("deva") || lowerType.equals("devb") || 
+               lowerType.equals("dev a") || lowerType.equals("dev b");
     }
     
     private String getColorFromTypes(String base, String top) {

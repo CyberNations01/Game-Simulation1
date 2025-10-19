@@ -73,7 +73,7 @@ public class Simulation {
         for (int id = 1; id <= 11; id++) {
             StackRing ring = (id == 1) ? StackRing.INNER :
                     (id >= 2 && id <= 7) ? StackRing.MIDDLE : StackRing.OUTER;
-            State init = initialStates.getOrDefault(id, State.WILDS); // Default to WILDS, modify as needed
+            State init = initialStates.getOrDefault(id, State.WILDS); // 默认给 WILDS，按需改
             myStacks.add(new MyStack(id, ring, init));
         }
         System.out.println("Init states => " +

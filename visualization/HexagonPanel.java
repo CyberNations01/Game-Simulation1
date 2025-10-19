@@ -9,7 +9,9 @@ public class HexagonPanel extends JPanel {
     public HexagonPanel(List<HexData> hexes) {
         this.hexes = hexes;
         this.drawer = new HexagonDrawer();
-        setPreferredSize(new Dimension(800, 700));
+        setPreferredSize(new Dimension(900, 600));
+        setMinimumSize(new Dimension(900, 600));
+        setMaximumSize(new Dimension(900, 600));
         setBackground(Color.WHITE);
     }
     

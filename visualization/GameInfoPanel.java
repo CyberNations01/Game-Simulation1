@@ -54,7 +54,7 @@ public class GameInfoPanel extends JPanel {
     private void setupLayout() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 5, 2, 5);
+        gbc.insets = new Insets(3, 8, 3, 8);
         gbc.anchor = GridBagConstraints.WEST;
         
         // Row 1: Current Round and Max Rounds
@@ -83,16 +83,22 @@ public class GameInfoPanel extends JPanel {
         gbc.gridx = 1;
         add(devBCountLabel, gbc);
         
-        // Row 4: Token percentages
+        // Row 4: Empty space for spacing
         gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        add(new JLabel(" "), gbc);
+        gbc.gridwidth = 1;
+        
+        // Row 5: Token percentages
+        gbc.gridx = 0; gbc.gridy = 6;
         add(new JLabel("Token Percentages:"), gbc);
         
-        gbc.gridx = 0; gbc.gridy = 6;
+        gbc.gridx = 0; gbc.gridy = 7;
         add(wildsPercentLabel, gbc);
         gbc.gridx = 1;
         add(wastesPercentLabel, gbc);
         
-        gbc.gridx = 0; gbc.gridy = 7;
+        gbc.gridx = 0; gbc.gridy = 8;
         add(devAPercentLabel, gbc);
         gbc.gridx = 1;
         add(devBPercentLabel, gbc);
