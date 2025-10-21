@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "total_rounds": 5,
+  "rounds": [
+    {
+      "round_number": 1,
+      "board": {
+        "hexes": [
+          { "id": 1, "baseType": "Wilds", "topType": null },
+          { "id": 2, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 3, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 4, "baseType": "Wastes", "topType": null },
+          { "id": 5, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 6, "baseType": "Wastes", "topType": null },
+          { "id": 7, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 8, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 9, "baseType": "Wilds", "topType": null },
+          { "id": 10, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 11, "baseType": "Wilds", "topType": "DevA" }
+        ]
+      },
+      "game_state": {
+        "current_round": 1,
+        "max_rounds": 5,
+        "bag_total": 0
+      },
+      "tokens": {
+        "Wilds": 25,
+        "Wastes": 25,
+        "DevA": 25,
+        "DevB": 25
+      }
+    },
+    {
+      "round_number": 2,
+      "board": {
+        "hexes": [
+          { "id": 1, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 2, "baseType": "Wastes", "topType": null },
+          { "id": 3, "baseType": "Wilds", "topType": null },
+          { "id": 4, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 5, "baseType": "Wilds", "topType": null },
+          { "id": 6, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 7, "baseType": "Wilds", "topType": null },
+          { "id": 8, "baseType": "Wastes", "topType": null },
+          { "id": 9, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 10, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 11, "baseType": "Wilds", "topType": null }
+        ]
+      },
+      "game_state": {
+        "current_round": 2,
+        "max_rounds": 5,
+        "bag_total": 5
+      },
+      "tokens": {
+        "Wilds": 23,
+        "Wastes": 24,
+        "DevA": 24,
+        "DevB": 24
+      }
+    },
+    {
+      "round_number": 3,
+      "board": {
+        "hexes": [
+          { "id": 1, "baseType": "Wilds", "topType": null },
+          { "id": 2, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 3, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 4, "baseType": "Wastes", "topType": null },
+          { "id": 5, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 6, "baseType": "Wastes", "topType": null },
+          { "id": 7, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 8, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 9, "baseType": "Wilds", "topType": null },
+          { "id": 10, "baseType": "Wastes", "topType": null },
+          { "id": 11, "baseType": "Wilds", "topType": "DevA" }
+        ]
+      },
+      "game_state": {
+        "current_round": 3,
+        "max_rounds": 5,
+        "bag_total": 10
+      },
+      "tokens": {
+        "Wilds": 22,
+        "Wastes": 23,
+        "DevA": 22,
+        "DevB": 23
+      }
+    },
+    {
+      "round_number": 4,
+      "board": {
+        "hexes": [
+          { "id": 1, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 2, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 3, "baseType": "Wilds", "topType": null },
+          { "id": 4, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 5, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 6, "baseType": "Wastes", "topType": null },
+          { "id": 7, "baseType": "Wilds", "topType": null },
+          { "id": 8, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 9, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 10, "baseType": "Wastes", "topType": null },
+          { "id": 11, "baseType": "Wilds", "topType": null }
+        ]
+      },
+      "game_state": {
+        "current_round": 4,
+        "max_rounds": 5,
+        "bag_total": 15
+      },
+      "tokens": {
+        "Wilds": 20,
+        "Wastes": 22,
+        "DevA": 21,
+        "DevB": 22
+      }
+    },
+    {
+      "round_number": 5,
+      "board": {
+        "hexes": [
+          { "id": 1, "baseType": "Wilds", "topType": null },
+          { "id": 2, "baseType": "Wastes", "topType": null },
+          { "id": 3, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 4, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 5, "baseType": "Wilds", "topType": null },
+          { "id": 6, "baseType": "Wastes", "topType": "DevA" },
+          { "id": 7, "baseType": "Wilds", "topType": "DevB" },
+          { "id": 8, "baseType": "Wastes", "topType": null },
+          { "id": 9, "baseType": "Wilds", "topType": "DevA" },
+          { "id": 10, "baseType": "Wastes", "topType": "DevB" },
+          { "id": 11, "baseType": "Wilds", "topType": null }
+        ]
+      },
+      "game_state": {
+        "current_round": 5,
+        "max_rounds": 5,
+        "bag_total": 20
+      },
+      "tokens": {
+        "Wilds": 18,
+        "Wastes": 21,
+        "DevA": 20,
+        "DevB": 21
+      }
+    }
+  ]
+}
+

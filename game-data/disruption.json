@@ -338,7 +338,7 @@
       11
     ],
     "effect": [
-      "Cap Env: 4"
+      "CapEnv:4"
     ],
     "cost": [
       "HR:-1",
@@ -367,7 +367,7 @@
       11
     ],
     "effect": [
-      "Cap Env: 4"
+      "CapEnv:4"
     ],
     "cost": [
       "HR:-1",
@@ -682,7 +682,7 @@
       11
     ],
     "effect": [
-      "Move ppl",
+      "MovPpl",
       "HR:+2"
     ],
     "cost": [],
@@ -709,7 +709,7 @@
       11
     ],
     "effect": [
-      "Move ppl",
+      "MovPpl",
       "HR:+2"
     ],
     "cost": [],

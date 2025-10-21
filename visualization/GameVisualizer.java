@@ -17,7 +17,7 @@ public class GameVisualizer extends JFrame {
     }
     
     private void initializeComponents() {
-        setTitle("Game Hexagon Visualizer");
+        setTitle("CyberNations Game Simulation Console v2.0");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
         setLocationRelativeTo(null);
