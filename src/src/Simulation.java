@@ -15,6 +15,9 @@ public class Simulation {
     final int turns;
     final long seed;
     private int currentRound = 0;
+    private DisruptionCardManager disruptionManager;
+    private Parameters parameters;
+    private int version = 1; // 1 = Stage 1, 2 = Stage 2
 
     public int getCurrentRound() {
         return currentRound;
@@ -29,11 +32,33 @@ public class Simulation {
     Simulation(int turns, long seed,
                Map<Integer, State> initialStates,
                Map<FeedbackToken, Integer> poolLimitOverride) {
+        this(turns, seed, initialStates, poolLimitOverride, 1); // Default to Stage 1
+    }
+    
+    Simulation(int turns, long seed,
+               Map<Integer, State> initialStates,
+               Map<FeedbackToken, Integer> poolLimitOverride,
+               int version) {
         if (turns < 1 || turns > 100) throw new IllegalArgumentException("turns must be 1..100");
         this.turns = turns;
         this.seed  = seed;
         this.rng = new Random(seed);
+        this.version = version;
         this.bag = new Bag(rng, 20); // Default is 20.
+        
+        // Initialize Stage 2 components
+        if (version == 2) {
+            this.disruptionManager = new DisruptionCardManager();
+            this.parameters = new Parameters();
+            
+            // Load disruption cards
+            if (!disruptionManager.loadCardsFromFile("game-data/disruption.json")) {
+                System.out.println("Warning: Failed to load disruption cards, using Stage 1 mode");
+                this.version = 1;
+            } else {
+                System.out.println("Stage 2 mode enabled with disruption cards");
+            }
+        }
 
         // Set the bag limit to 20.
         if (poolLimitOverride != null) {
@@ -57,11 +82,34 @@ public class Simulation {
                Map<Integer, State> initialStates,
                Map<FeedbackToken, Integer> poolLimitOverride,
                int[] poolLimitsArray) {
+        this(turns, seed, initialStates, poolLimitOverride, poolLimitsArray, 1); // Default to Stage 1
+    }
+    
+    Simulation(int turns, long seed,
+               Map<Integer, State> initialStates,
+               Map<FeedbackToken, Integer> poolLimitOverride,
+               int[] poolLimitsArray,
+               int version) {
         if (turns < 1 || turns > 100) throw new IllegalArgumentException("turns must be 1..100");
         this.turns = turns;
         this.seed  = seed;
         this.rng = new Random(seed);
+        this.version = version;
         this.bag = new Bag(rng, poolLimitsArray, 20); // Default is 20.
+        
+        // Initialize Stage 2 components
+        if (version == 2) {
+            this.disruptionManager = new DisruptionCardManager();
+            this.parameters = new Parameters();
+            
+            // Load disruption cards
+            if (!disruptionManager.loadCardsFromFile("game-data/disruption.json")) {
+                System.out.println("Warning: Failed to load disruption cards, using Stage 1 mode");
+                this.version = 1;
+            } else {
+                System.out.println("Stage 2 mode enabled with disruption cards");
+            }
+        }
 
         // Set the bag limit to 20.
         if (poolLimitOverride != null) {
@@ -114,7 +162,11 @@ public class Simulation {
                 drawn.add(tok);
                 // Immediately settle to the corresponding MyStack.
                 MyStack target = myStacks.get(pos - 1); // ids start at 1, while lists start at 0.
-                tok.resolveOn(target);
+                if (version == 2 && disruptionManager != null) {
+                    tok.resolveOn(target, disruptionManager);
+                } else {
+                    tok.resolveOn(target);
+                }
             }
 
 

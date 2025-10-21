@@ -7,11 +7,35 @@ public class SimulationApp {
     public static void main(String[] args) {
         int turns  = -1;
         long seed = 5L;
+        int version = 1; // Default to Stage 1
 
         // Initialize the state of 11 stacks.
         Map<Integer, State> init = new HashMap<>();
-        System.out.println("Would you like to manually set initial states or just put in a ratio? (y/n/r)");
+        
         Scanner in = new Scanner(System.in);
+        
+        // Version selection
+        System.out.println("Please select version:");
+        System.out.println("1 - Stage 1 (Basic version)");
+        System.out.println("2 - Stage 2 (With disruption cards)");
+        System.out.print("Enter version number (1 or 2): ");
+        String versionInput = in.nextLine().trim();
+        
+        try {
+            int selectedVersion = Integer.parseInt(versionInput);
+            if (selectedVersion == 2) {
+                version = 2;
+                System.out.println("Stage 2 selected - With disruption cards enabled");
+            } else {
+                version = 1;
+                System.out.println("Stage 1 selected - Basic version");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input, using default Stage 1");
+            version = 1;
+        }
+        
+        System.out.println("Would you like to manually set initial states or just put in a ratio? (y/n/r)");
         String choice = in.nextLine().trim().toLowerCase();
 
         if (choice.equals("n")) {
@@ -51,7 +75,7 @@ public class SimulationApp {
                     }
                 }
             }
-            Simulation sim = new Simulation(turns, seed, init, limitOverride);
+            Simulation sim = new Simulation(turns, seed, init, limitOverride, version);
             sim.run();
         } else if(choice.equals("y")){
             System.out.println("Please type your turn number in (1 - 100).");
@@ -146,7 +170,7 @@ public class SimulationApp {
                     }
                 }
             }
-            Simulation sim = new Simulation(turns, seed, init, limitOverride,limits);
+            Simulation sim = new Simulation(turns, seed, init, limitOverride, limits, version);
             sim.run();
         }else {
 //            System.out.println("Please type your turn number in (1 - 100).");
@@ -196,7 +220,7 @@ public class SimulationApp {
                             }
                         }
                     }
-                    Simulation sim = new Simulation(turns, seed, init, limitOverride);
+                    Simulation sim = new Simulation(turns, seed, init, limitOverride, version);
                     sim.run();
                }
             }
