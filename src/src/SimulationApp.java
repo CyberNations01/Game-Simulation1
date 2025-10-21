@@ -15,25 +15,47 @@ public class SimulationApp {
         Scanner in = new Scanner(System.in);
         
         // Version selection
-        System.out.println("Please select version:");
-        System.out.println("1 - Stage 1 (Basic version)");
-        System.out.println("2 - Stage 2 (With disruption cards)");
-        System.out.print("Enter version number (1 or 2): ");
-        String versionInput = in.nextLine().trim();
-        
-        try {
-            int selectedVersion = Integer.parseInt(versionInput);
-            if (selectedVersion == 2) {
-                version = 2;
-                System.out.println("Stage 2 selected - With disruption cards enabled");
-            } else {
-                version = 1;
-                System.out.println("Stage 1 selected - Basic version");
+        while (true) {
+            System.out.println("Please select version:");
+            System.out.println("1 - Stage 1 (Basic version)");
+            System.out.println("2 - Stage 2 (With disruption cards)");
+            System.out.print("Enter version number (1 or 2): ");
+
+            String versionInput = in.nextLine().trim();
+            try {
+                int selected = Integer.parseInt(versionInput);
+                if (selected == 1 || selected == 2) {
+                    version = selected;
+                    System.out.println(selected == 2
+                            ? "Stage 2 selected - With disruption cards enabled"
+                            : "Stage 1 selected - Basic version");
+                    break; // valid, exit loop
+                } else {
+                    System.out.printf("Invalid number: %s. Please enter 1 or 2.%n", versionInput);
+                }
+            } catch (NumberFormatException e) {
+                System.out.printf("Invalid input: %s. Please enter 1 or 2.%n", versionInput);
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input, using default Stage 1");
-            version = 1;
         }
+//        System.out.println("Please select version:");
+//        System.out.println("1 - Stage 1 (Basic version)");
+//        System.out.println("2 - Stage 2 (With disruption cards)");
+//        System.out.print("Enter version number (1 or 2): ");
+//        String versionInput = in.nextLine().trim();
+//
+//        try {
+//            int selectedVersion = Integer.parseInt(versionInput);
+//            if (selectedVersion == 2) {
+//                version = 2;
+//                System.out.println("Stage 2 selected - With disruption cards enabled");
+//            } else {
+//                version = 1;
+//                System.out.println("Stage 1 selected - Basic version");
+//            }
+//        } catch (NumberFormatException e) {
+//            System.out.println("Invalid input, using default Stage 1");
+//            version = 1;
+//        }
         
         System.out.println("Would you like to manually set initial states or just put in a ratio? (y/n/r)");
         String choice = in.nextLine().trim().toLowerCase();
