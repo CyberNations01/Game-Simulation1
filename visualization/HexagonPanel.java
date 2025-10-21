@@ -15,6 +15,11 @@ public class HexagonPanel extends JPanel {
         setBackground(Color.WHITE);
     }
     
+    public void setHexes(List<HexData> hexes) {
+        this.hexes = hexes;
+        repaint();
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

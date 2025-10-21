@@ -194,6 +194,9 @@ public class HexagonDrawer {
     }
     
     private Color getColorFromString(String colorName) {
+        if (colorName == null) {
+            return Color.GRAY; // 默认颜色
+        }
         switch (colorName.toLowerCase()) {
             case "green":
                 return new Color(0x51ad2f); // Green: #51ad2f
